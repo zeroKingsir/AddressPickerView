@@ -13,6 +13,7 @@
 
 @interface ViewController ()<AddressPickerDelegate>
 @property (nonatomic,strong) AddressPicker *pickerView;
+@property (nonatomic,strong) UIButton *addressBtn;
 
 
 @end
@@ -22,10 +23,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.frame = CGRectMake(100, 100, 100, 100);
+    button.frame = CGRectMake(20, 100, kSCREEN_WIDTH - 40, 80);
     [button setTitle:@"加载地址" forState:UIControlStateNormal];
     [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     button.backgroundColor = [UIColor cyanColor];
+    button.titleLabel.textAlignment = NSTextAlignmentCenter;
+    self.addressBtn = button;
+    [self.view addSubview:self.addressBtn];
     [button addTarget:self action:@selector(enterAddress) forControlEvents:UIControlEventTouchUpInside];
 
 }
@@ -49,6 +53,7 @@
 - (void)AddressPickerReturnBlockWithProvince:(NSString *)province city:(NSString *)city town:(NSString *)town{
 
     self.pickerView.hidden = YES;
+    [self.addressBtn setTitle:[NSString stringWithFormat:@"%@%@%@",province,city,town] forState:UIControlStateNormal];
     NSLog(@"%@  %@  %@",province,city,town);
 }
 - (void)setPickerView:(AddressPicker *)pickerView{

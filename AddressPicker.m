@@ -32,17 +32,13 @@
 - (void)getAddressInformation{
   
     NSString *path = [[NSBundle mainBundle] pathForResource:@"Address" ofType:@"plist"];
-    self.pickerDic = [NSDictionary dictionaryWithContentsOfFile:path];
-//    self.pickerDic = [[NSDictionary alloc] initWithContentsOfFile:path];
+    self.pickerDic = [[NSDictionary alloc] initWithContentsOfFile:path];
     self.provinceArray = [self.pickerDic allKeys];
     self.selectedArray = [self.pickerDic objectForKey:[[self.pickerDic allKeys] objectAtIndex:0]];
-//    self.selectedArray = [self.pickerDic objectForKey:[self.provinceArray objectAtIndex:0]];
     if (self.selectedArray.count > 0) {
-        
         self.cityArray = [[self.selectedArray objectAtIndex:0] allKeys];
     }
     if (self.cityArray.count > 0) {
-        
         self.townArray = [[self.selectedArray objectAtIndex:0] objectForKey:[self.cityArray objectAtIndex:0]];
     }
     
@@ -53,27 +49,26 @@
     CGFloat height = self.frame.size.height;
     CGFloat width = self.frame.size.width;
     UIColor *color = [UIColor colorWithRed:242/255.0 green:243/255.0 blue:249/255.0 alpha:1];
-    UIColor *btnColor = [UIColor colorWithRed:65.0/255.0 green:164.0/255.0 blue:249.0/255.0 alpha:1];
-    UIView *selectedView = [[UIView alloc] initWithFrame:CGRectMake(0, height-210, width, 30)];
-    selectedView.backgroundColor = color;
-    
+    UIColor *btnColor = [UIColor colorWithRed:65.0/255 green:164.0/255 blue:249.0/255 alpha:1];
+    UIView *selectView = [[UIView alloc] initWithFrame:CGRectMake(0, height - 210, width, 30)];
+    selectView.backgroundColor = color;
     UIButton *cancleBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [cancleBtn setTitle:@"取消" forState:0];
     [cancleBtn setTitleColor:btnColor forState:0];
     cancleBtn.frame = CGRectMake(0, 0, 60, 40);
-    [cancleBtn addTarget:selectedView action:@selector(dateCancleAction) forControlEvents:UIControlEventTouchUpInside];
-    [selectedView addSubview:cancleBtn];
+    [cancleBtn addTarget:self action:@selector(dateCancleAction) forControlEvents:UIControlEventTouchUpInside];
+    [selectView addSubview:cancleBtn];
     
     UIButton *ensureBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [ensureBtn setTitle:@"确定" forState:0];
+    [ensureBtn setTitleColor:btnColor forState:0];
     ensureBtn.frame = CGRectMake(width - 60, 0, 60, 40);
-    [ensureBtn addTarget:selectedView action:@selector(dateEnsureAction) forControlEvents:UIControlEventTouchUpInside];
-    [selectedView addSubview:ensureBtn];
+    [ensureBtn addTarget:self action:@selector(dateEnsureAction) forControlEvents:UIControlEventTouchUpInside];
+    [selectView addSubview:ensureBtn];
+    [self addSubview:selectView];
     
-    [self addSubview:selectedView];
-    
-    self.pickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0, height - 180, width, 180)];
-    self.pickerView.delegate = self;
+    self.pickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0, height - 180 , width,  180)];
+    self.pickerView.delegate   = self;
     self.pickerView.dataSource = self;
     self.pickerView.backgroundColor = color;
     [self addSubview:self.pickerView];
@@ -86,37 +81,36 @@
     self.province = province;
     self.city = city;
     self.town = town;
-    NSInteger currentIndex = 0;
+    NSInteger currtIndex = 0;
     if (self.province) {
-        
-        for (NSInteger i = 0; i < self.provinceArray.count; i ++) {
-            NSString *city = self.selectedArray[i];
+        for (NSInteger i = 0; i < self.provinceArray.count; i++) {
+            NSString *city = self.provinceArray[i];
             NSInteger select = 0;
             if ([city isEqualToString:self.province]) {
                 select = i;
                 [self.pickerView selectRow:i inComponent:0 animated:YES];
+                break;
             }
         }
-        self.cityArray = [self.pickerDic [self.province][0] allKeys];
-        for (NSInteger i = 0; i < self.cityArray.count;  i++) {
+        self.cityArray = [self.pickerDic[self.province][0] allKeys];
+        for (NSInteger i = 0; i < self.cityArray.count; i++) {
             NSString *city = self.cityArray[i];
             if ([city isEqualToString:self.city]) {
                 [self.pickerView selectRow:i inComponent:1 animated:YES];
+                break;
             }
-            
         }
         self.townArray = self.pickerDic[self.province][0][self.city];
         for (NSInteger i = 0; i < self.townArray.count; i++) {
             NSString *town = self.townArray[i];
             if ([town isEqualToString:self.town]) {
-                currentIndex = i;
+                currtIndex = i;
                 break;
             }
         }
-        
     }
     [self.pickerView reloadAllComponents];
-    [self.pickerView selectRow:currentIndex inComponent:2 animated:YES];
+    [self.pickerView selectRow:currtIndex inComponent:2 animated:YES];
     [self updateAddress];
 }
 - (void)dateCancleAction{
